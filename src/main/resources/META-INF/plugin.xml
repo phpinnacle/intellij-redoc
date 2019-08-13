@@ -4,12 +4,13 @@
     <vendor email="dev@phpinnacle.com" url="http://www.phpinnacle.com">PHPinnacle</vendor>
 
     <description><![CDATA[
-        OpenAPI 3.0 (Swagger) documentation render via Redoc JS library
+        OpenAPI 3.0 (Swagger) documentation render via <a href >Redoc JS library
     ]]></description>
 
     <idea-version since-build="182"/>
 
     <depends>com.intellij.modules.lang</depends>
+    <depends>org.jetbrains.plugins.yaml</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <fileEditorProvider implementation="com.phpinnacle.redoc.RedocEditorProvider"/>

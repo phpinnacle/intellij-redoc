@@ -18,7 +18,7 @@ public class RedocEditorProvider implements FileEditorProvider {
 
     @Override
     public boolean accept(@NotNull Project project, @NotNull VirtualFile virtualFile) {
-        return app.isAcceptable(virtualFile);
+        return app.isAcceptable(project, virtualFile);
     }
 
     @NotNull

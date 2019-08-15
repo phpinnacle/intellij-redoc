@@ -2,6 +2,7 @@ package com.phpinnacle.redoc;
 
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.components.ServiceManager;
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.Disposer;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -29,8 +30,8 @@ class RedocServer implements Disposable {
         return ServiceManager.getService(RedocServer.class);
     }
 
-    void attach(@NotNull String spec, @NotNull String text) {
-        handler.attach(spec, text);
+    void attach(@NotNull String spec, @NotNull Document document) {
+        handler.attach(spec, document);
     }
 
     void detach(@NotNull String spec) {
@@ -50,10 +51,10 @@ class RedocServer implements Disposable {
     }
 
     private static class RootHandler implements HttpHandler {
-        private Map<String, String> documents = new HashMap<>();
+        private Map<String, Document> documents = new HashMap<>();
 
-        void attach(@NotNull String spec, @NotNull String text) {
-            documents.put(spec, text);
+        void attach(@NotNull String spec, @NotNull Document document) {
+            documents.put(spec, document);
         }
 
         void detach(@NotNull String spec) {
@@ -77,7 +78,7 @@ class RedocServer implements Disposable {
                     String path = httpExchange.getRequestURI().getPath();
 
                     if (documents.containsKey(path)) {
-                        text = documents.get(path);
+                        text = documents.get(path).getText();
                     } else {
                         status = 404;
                     }

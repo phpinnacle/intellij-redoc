@@ -31,11 +31,14 @@ javafx {
 }
 
 publishPlugin {
-    token pluginToken
+    token intellijPluginToken
 }
 
 patchPluginXml {
     changeNotes """
-       Refactoring and CS fixes
+       Swagger 2.0 specification support
+
+       Refactoring
+       CS fixes
     """
 }

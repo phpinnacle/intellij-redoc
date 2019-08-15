@@ -38,7 +38,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
-[ico-version]: https://img.shields.io/jetbrains/plugin/v/intellij-redoc?style=flat-square
+[ico-version]: https://img.shields.io/jetbrains/plugin/v/12822-redoc?style=flat-square
 [ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
 
 [link-redoc]: https://github.com/Redocly/redoc

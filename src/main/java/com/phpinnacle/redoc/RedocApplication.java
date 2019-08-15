@@ -25,13 +25,20 @@ import org.jetbrains.yaml.psi.YAMLValue;
 import org.jetbrains.yaml.psi.impl.YAMLDocumentImpl;
 import org.jetbrains.yaml.psi.impl.YAMLKeyValueImpl;
 
-import java.util.Objects;
+import java.util.*;
 
 class RedocApplication implements Disposable {
     private RedocServer server = RedocServer.getInstance();
     private RedocSettings settings = RedocSettings.getInstance();
     private FileDocumentManager manager = FileDocumentManager.getInstance();
     private Application application = ApplicationManager.getApplication();
+
+    private Map<String, String> openApiFields = new HashMap<>();
+
+    RedocApplication() {
+        openApiFields.put("swagger", "2.0");
+        openApiFields.put("openapi", "3.0.0");
+    }
 
     boolean isAcceptable(@NotNull Project project, @NotNull VirtualFile file) {
         PsiFile psiFile = PsiManager.getInstance(project).findFile(file);
@@ -46,11 +53,11 @@ class RedocApplication implements Disposable {
     @NotNull
     FileEditor createEditor(@NotNull VirtualFile file) {
         RedocEditor editor = new RedocEditor(server, settings, file.getPath());
-        Document document = manager.getDocument(file);
+        Document document = Objects.requireNonNull(manager.getDocument(file));
 
-        editor.setup(Objects.requireNonNull(document));
+        editor.setup(document);
 
-        server.attach(file.getPath(), document.getText());
+        server.attach(file.getPath(), document);
 
         application.getMessageBus()
             .connect(editor)
@@ -76,11 +83,13 @@ class RedocApplication implements Disposable {
                 continue;
             }
 
-            JsonProperty schema = ((JsonObjectImpl) element).findProperty("openapi");
-            JsonValue value = schema != null ? schema.getValue() : null;
+            for (String key : openApiFields.keySet()) {
+                JsonProperty property = ((JsonObjectImpl) element).findProperty(key);
+                JsonValue value = property != null ? property.getValue() : null;
 
-            if (value != null) {
-                return value.textMatches("\"3.0.0\"");
+                if (value != null) {
+                    return matchValue(value, key);
+                }
             }
         }
 
@@ -110,14 +119,16 @@ class RedocApplication implements Disposable {
                     continue;
                 }
 
-                if (!"openapi".equals(child.getName())) {
-                    continue;
-                }
+                for (String key : openApiFields.keySet()) {
+                    if (!key.equals(child.getName())) {
+                        continue;
+                    }
 
-                YAMLValue value = ((YAMLKeyValueImpl) child).getValue();
+                    YAMLValue value = ((YAMLKeyValueImpl) child).getValue();
 
-                if (value != null) {
-                    return value.textMatches("3.0.0");
+                    if (value != null) {
+                        return matchValue(value, key);
+                    }
                 }
             }
         }
@@ -130,5 +141,12 @@ class RedocApplication implements Disposable {
         Disposer.dispose(this);
 
         server.dispose();
+    }
+
+    private boolean matchValue(PsiElement element, String key)
+    {
+        String version = openApiFields.get(key);
+
+        return element.textMatches(version) || element.textMatches("\"" + version + "\"");
     }
 }

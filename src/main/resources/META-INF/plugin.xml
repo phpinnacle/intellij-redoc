@@ -5,6 +5,14 @@
 
     <description><![CDATA[
         OpenAPI 3.0 (Swagger) documentation render via <a target="_blank" href="https://github.com/Rebilly/ReDoc" >Redoc JS library</a>
+
+        <h3>Features:</h3>
+
+        <ol>
+        <li>OpenAPI 3.0 and Swagger 2.0 specifications</li>
+        <li>Specifications in YAML or JSON</li>
+        <li>Redoc settings supported</li>
+        </ol>
     ]]></description>
 
     <idea-version since-build="182"/>
